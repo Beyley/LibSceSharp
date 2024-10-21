@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibSceSharp", "LibSceSharp\LibSceSharp.csproj", "{A2D21367-F6F6-41C0-9A70-CD805C93DE75}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibSceSharp.Test", "LibSceSharp.Test\LibSceSharp.Test.csproj", "{1F25321B-5601-4E73-92C6-915AD7EEE173}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A2D21367-F6F6-41C0-9A70-CD805C93DE75}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A2D21367-F6F6-41C0-9A70-CD805C93DE75}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A2D21367-F6F6-41C0-9A70-CD805C93DE75}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A2D21367-F6F6-41C0-9A70-CD805C93DE75}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1F25321B-5601-4E73-92C6-915AD7EEE173}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F25321B-5601-4E73-92C6-915AD7EEE173}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F25321B-5601-4E73-92C6-915AD7EEE173}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F25321B-5601-4E73-92C6-915AD7EEE173}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
