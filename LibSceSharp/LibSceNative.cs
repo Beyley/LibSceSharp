@@ -3,7 +3,7 @@ using System.Text;
 
 namespace LibSceSharp;
 
-public static unsafe partial class Abi
+public static unsafe partial class LibSceNative
 {
     private const string LibraryName = "sce";
 
@@ -18,6 +18,9 @@ public static unsafe partial class Abi
 
     [LibraryImport(LibraryName)]
     public static unsafe partial int libsce_get_content_id(void* handle, byte* cfDataPtr, nuint cfDataLen, byte* outPtr);
+
+    [LibraryImport(LibraryName)]
+    public static unsafe partial void libsce_set_log_callback(delegate* unmanaged[Cdecl]<byte*, LibSceLogLevel, byte*, void> callback);
     
     [LibraryImport(LibraryName)]
     private static unsafe partial byte* libsce_error_name(int err);
