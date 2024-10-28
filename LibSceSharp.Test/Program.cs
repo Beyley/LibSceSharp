@@ -12,7 +12,7 @@ static class Program
         var message = Marshal.PtrToStringUTF8((IntPtr)messagePtr);
         
         Console.WriteLine("override log func, ({0}) {1}: {2}", scope, level, message);
-    } 
+    }
     
     static unsafe void Main(string[] args)
     {
@@ -20,10 +20,9 @@ static class Program
         
         using var libsce = new LibSce();
 
-        var cfData = File.ReadAllBytes(args[0]);
+        var contentId = libsce.GetContentId(args[0]);
+        var isNpdrm = libsce.IsSelfNpdrm(args[0]);
         
-        var contentId = libsce.GetContentId(cfData);
-        
-        Console.WriteLine($"Content ID: \"{contentId}\"");
+        Console.WriteLine($"Content ID: \"{contentId}\", is npdrm: {isNpdrm}");
     }
 }

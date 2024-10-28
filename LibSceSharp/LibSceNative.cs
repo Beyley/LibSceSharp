@@ -18,6 +18,9 @@ public static unsafe partial class LibSceNative
 
     [LibraryImport(LibraryName)]
     public static unsafe partial int libsce_get_content_id(void* handle, byte* cfDataPtr, nuint cfDataLen, byte* outPtr);
+    
+    [LibraryImport(LibraryName)]
+    public static unsafe partial int libsce_is_self_npdrm(void* handle, byte* cfDataPtr, nuint cfDataLen, out Bool32 isNpdrm);
 
     [LibraryImport(LibraryName)]
     public static unsafe partial void libsce_set_log_callback(delegate* unmanaged[Cdecl]<byte*, LibSceLogLevel, byte*, void> callback);
