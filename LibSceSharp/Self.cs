@@ -12,7 +12,7 @@ public unsafe class Self : IDisposable
 
     public SelfLoadStatus LoadStatus => LibSceNative.libsce_self_get_load_status(_handle);
     
-    public bool IsNpdrmApplication => LibSceNative.libsce_self_is_npdrm_application(_handle);
+    public bool NeedsNpdrmLicense => LibSceNative.libsce_self_needs_npdrm_license(_handle);
 
     public string? ContentId
     {
@@ -28,25 +28,74 @@ public unsafe class Self : IDisposable
         }
     }
 
-    public Self(LibSce libsce, string path) : this(libsce, File.ReadAllBytes(path)) {}
+    public Self(LibSce libsce, byte[] data, bool headerOnly = false) : this(libsce, data, null, null, null, null, headerOnly) {}
+    public Self(LibSce libsce, byte[] data, byte[] rap) : this(libsce, data, rap, null) {}
+    public Self(LibSce libsce, byte[] data, byte[] rif, byte[] actDat, byte[] idps) : this(libsce, data, null, rif, actDat, idps) {}
 
-    public Self(LibSce libsce, byte[] data)
+    private Self(LibSce libsce, byte[] data, byte[]? rap = null, byte[]? rif = null, byte[]? actDat = null,
+        byte[]? idps = null, bool headerOnly = false)
     {
         // NOTE: we have to duplicate the memory here since libsce expects to take ownership of the passed memory (but is not responsible for freeing it!)
-        
+
         _libSce = libsce;
-        
+
         // Allocate some static memory for the SELF data
         _dataLen = (UIntPtr)data.LongLength;
         _dataPtr = (byte*)NativeMemory.Alloc(_dataLen);
-        
+
         // Copy the data in
         data.AsSpan().CopyTo(new Span<byte>(_dataPtr, data.Length));
 
         try
         {
-            // Load the SELF file
-            LibSceNative.HandleError(LibSceNative.libsce_self_load(libsce, _dataPtr, _dataLen, out _handle), nameof(LibSceNative.libsce_self_load));
+            if (rap != null)
+            {
+                if (rap.Length != 0x10)
+                    throw new ArgumentOutOfRangeException(nameof(rap), rap.Length.ToString(),
+                        "Wanted RAP buffer with length 0x10");
+
+                fixed (byte* rapPtr = rap)
+                {
+                    // Load the SELF file with a RAP license
+                    LibSceNative.HandleError(
+                        LibSceNative.libsce_self_load_rap(libsce, _dataPtr, _dataLen, rapPtr, out _handle),
+                        nameof(LibSceNative.libsce_self_load_rap));
+                }
+            }
+            else if (rif != null || actDat != null || idps != null)
+            {
+                ArgumentNullException.ThrowIfNull(rif);
+                ArgumentNullException.ThrowIfNull(actDat);
+                ArgumentNullException.ThrowIfNull(idps);
+
+                if (idps.Length != 0x10)
+                    throw new ArgumentOutOfRangeException(nameof(idps), idps.Length.ToString(),
+                        "Wanted IDPS buffer with length 0x10");
+
+                fixed (byte* rifPtr = rif)
+                fixed (byte* actDatPtr = actDat)
+                fixed (byte* idpsPtr = idps)
+                {
+                    // Load the SELF file with a RIF license
+                    LibSceNative.HandleError(
+                        LibSceNative.libsce_self_load_rif(
+                            libsce,
+                            _dataPtr, _dataLen,
+                            rifPtr, (nuint)rif.LongLength,
+                            actDatPtr, (nuint)actDat.LongLength,
+                            idpsPtr,
+                            out _handle),
+                        nameof(LibSceNative.libsce_self_load_rif));
+                }
+            }
+            else
+            {
+
+                // Load the SELF file
+                LibSceNative.HandleError(
+                    LibSceNative.libsce_self_load(libsce, _dataPtr, _dataLen, headerOnly, out _handle),
+                    nameof(LibSceNative.libsce_self_load));
+            }
         }
         catch
         {

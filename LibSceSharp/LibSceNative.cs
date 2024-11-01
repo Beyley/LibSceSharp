@@ -22,7 +22,13 @@ public static unsafe partial class LibSceNative
     private static unsafe partial byte* libsce_error_name(int err);
 
     [LibraryImport(LibraryName)]
-    public static unsafe partial int libsce_self_load(void* libsce, byte* cfDataPtr, nuint cfDataLen, out void* handle);
+    public static unsafe partial int libsce_self_load(void* libsce, byte* cfDataPtr, nuint cfDataLen, Bool32 headerOnly, out void* handle);
+
+    [LibraryImport(LibraryName)]
+    public static unsafe partial int libsce_self_load_rif(void* libsce, byte* cfDataPtr, nuint cfDataLen, byte* rifDataPtr, nuint rifDataLen, byte* actDatDataPtr, nuint actDatDataLen, byte* idpsPtr, out void* handle);
+
+    [LibraryImport(LibraryName)]
+    public static unsafe partial int libsce_self_load_rap(void* libsce, byte* cfDataPtr, nuint cfDataLen, byte* rapData, out void* handle);
 
     [LibraryImport(LibraryName)]
     public static unsafe partial void libsce_self_destroy(void* libsce, void* handle);
@@ -31,7 +37,7 @@ public static unsafe partial class LibSceNative
     public static unsafe partial SelfLoadStatus libsce_self_get_load_status(void* handle);
 
     [LibraryImport(LibraryName)]
-    public static unsafe partial Bool32 libsce_self_is_npdrm_application(void* handle);
+    public static unsafe partial Bool32 libsce_self_needs_npdrm_license(void* handle);
 
     [LibraryImport(LibraryName)]
     public static unsafe partial Bool32 libsce_self_get_content_id(void* handle, byte* contentIdPtr);
