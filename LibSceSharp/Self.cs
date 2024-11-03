@@ -20,13 +20,28 @@ public unsafe class Self : IDisposable
         {
             const int contentIdSize = 0x30;
 
-            var contentId = stackalloc byte[contentIdSize];
+            var contentId = stackalloc byte[contentIdSize + 1];
+            contentId[contentIdSize] = 0;
 
             return LibSceNative.libsce_self_get_content_id(_handle, contentId)
                 ? Marshal.PtrToStringAnsi((IntPtr)contentId)
                 : null;
         }
     }
+
+    // public byte[]? Sha1Hash
+    // {
+    //     get
+    //     {
+    //         const int sha1Size = 0x14;
+    //
+    //         var sha1 = stackalloc byte[sha1Size];
+    //
+    //         return LibSceNative.libsce_self_get_digest(_handle, sha1) 
+    //             ? new Span<byte>(sha1, sha1Size).ToArray() 
+    //             : null;
+    //     }
+    // }
 
     public Self(LibSce libsce, byte[] data, bool headerOnly = false) : this(libsce, data, null, null, null, null, headerOnly) {}
     public Self(LibSce libsce, byte[] data, byte[] rap) : this(libsce, data, rap, null) {}
@@ -103,6 +118,15 @@ public unsafe class Self : IDisposable
             NativeMemory.Free(_dataPtr);
             throw;
         }
+    }
+
+    public Span<byte> ExtractToElf()
+    {
+        LibSceNative.HandleError(
+            LibSceNative.libsce_self_extract_to_elf(_libSce, _handle, out byte* data, out nuint len),
+            nameof(LibSceNative.libsce_self_extract_to_elf));
+
+        return new Span<byte>(data, (int)len);
     }
 
     private void ReleaseUnmanagedResources()

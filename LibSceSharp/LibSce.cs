@@ -19,6 +19,12 @@ public unsafe class LibSce : IDisposable
         LibSceNative.libsce_set_log_callback(ptr);
     }
 
+    public void FreeMemory(Span<byte> memory)
+    {
+        fixed (byte* memoryPtr = memory)
+            LibSceNative.libsce_free_memory(this, memoryPtr, (UIntPtr)memory.Length);
+    }
+
     public void Dispose()
     {
         ReleaseUnmanagedResources();

@@ -19,9 +19,17 @@ internal static class Program
         LibSce.SetLogCallback(&LogOverride);
 
         var libsce = new LibSce();
-        var self = new Self(libsce, File.ReadAllBytes(args[0]), true);
+        var self = new Self(libsce, File.ReadAllBytes(args[0]), false);
 
         Console.WriteLine($"Content ID: \"{self.ContentId}\", needs npdrm license: {self.NeedsNpdrmLicense}, load status: {self.LoadStatus}");
+
+        var elf = self.ExtractToElf();
+
+        using var handle = File.OpenWrite("out.elf");
+        handle.Write(elf);
+        handle.Flush();
+        
+        libsce.FreeMemory(elf);
         
         self.Dispose();
         libsce.Dispose();

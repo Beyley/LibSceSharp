@@ -41,6 +41,15 @@ public static unsafe partial class LibSceNative
 
     [LibraryImport(LibraryName)]
     public static unsafe partial Bool32 libsce_self_get_content_id(void* handle, byte* contentIdPtr);
+
+    [LibraryImport(LibraryName)]
+    public static unsafe partial void libsce_free_memory(void* handle, void* ptr, nuint len);
+
+    [LibraryImport(LibraryName)]
+    public static unsafe partial int libsce_self_extract_to_elf(void* libsce, void* self, out byte* data, out nuint len);
+
+    [LibraryImport(LibraryName)]
+    public static unsafe partial Bool32 libsce_self_get_digest(void* self, byte* digest);
     
     public static void HandleError(int err, string func)
     {
