@@ -12,4 +12,29 @@
         </Content>
     </ItemGroup>
 
+    <PropertyGroup>
+        <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+        <Authors>LittleBigRefresh</Authors>
+        <Title>LibSceSharp.Native</Title>
+        <PackageId>LibSceSharp.Native</PackageId>
+        <Description>Native libraries for libsce, a library to decrypt, decompress, and disassemble files used by various Sony systems.</Description>
+        <RepositoryUrl>https://github.com/LittleBigRefresh/LibSceSharp</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageProjectUrl>https://github.com/LittleBigRefresh/LibSceSharp</PackageProjectUrl>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <None Include="..\README.md" Pack="true" PackagePath="\" />
+    </ItemGroup>
+
+    <Target DependsOnTargets="ResolveReferences" Name="CopyProjectReferencesToPackage">
+        <ItemGroup>
+            <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths-&gt;WithMetadataValue('ReferenceSourceTarget', 'ProjectReference'))" />
+        </ItemGroup>
+    </Target>
+
 </Project>
