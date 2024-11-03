@@ -6,10 +6,10 @@ namespace LibSceSharp.Test;
 internal static class Program
 {
     [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
-    public static unsafe void LogOverride(byte* scopePtr, LibSceLogLevel level, byte* messagePtr)
+    private static unsafe void LogOverride(byte* scopePtr, LibSceLogLevel level, byte* messagePtr)
     {
-        var scope = Marshal.PtrToStringUTF8((IntPtr)scopePtr);
-        var message = Marshal.PtrToStringUTF8((IntPtr)messagePtr);
+        string? scope = Marshal.PtrToStringUTF8((IntPtr)scopePtr);
+        string? message = Marshal.PtrToStringUTF8((IntPtr)messagePtr);
 
         Console.WriteLine("override log func, ({0}) {1}: {2}", scope, level, message);
     }
@@ -18,14 +18,14 @@ internal static class Program
     {
         LibSce.SetLogCallback(&LogOverride);
 
-        var libsce = new LibSce();
-        var self = new Self(libsce, File.ReadAllBytes(args[0]), false);
+        LibSce libsce = new();
+        Self self = new(libsce, File.ReadAllBytes(args[0]), false);
 
         Console.WriteLine($"Content ID: \"{self.ContentId}\", needs npdrm license: {self.NeedsNpdrmLicense}, load status: {self.LoadStatus}");
 
-        var elf = self.ExtractToElf();
+        Span<byte> elf = self.ExtractToElf();
 
-        using var handle = File.OpenWrite("out.elf");
+        using FileStream handle = File.OpenWrite("out.elf");
         handle.Write(elf);
         handle.Flush();
         

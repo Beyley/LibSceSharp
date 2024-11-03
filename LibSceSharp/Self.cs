@@ -20,7 +20,7 @@ public unsafe class Self : IDisposable
         {
             const int contentIdSize = 0x30;
 
-            var contentId = stackalloc byte[contentIdSize + 1];
+            byte* contentId = stackalloc byte[contentIdSize + 1];
             contentId[contentIdSize] = 0;
 
             return LibSceNative.libsce_self_get_content_id(_handle, contentId)

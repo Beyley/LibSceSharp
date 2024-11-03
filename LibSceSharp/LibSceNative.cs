@@ -55,7 +55,7 @@ public static unsafe partial class LibSceNative
     {
         if (err <= NoError) return;
 
-        var errName = Marshal.PtrToStringUTF8((IntPtr)libsce_error_name(err))!;
+        string errName = Marshal.PtrToStringUTF8((IntPtr)libsce_error_name(err))!;
 
         throw new LibSceException(errName, func);
     }
