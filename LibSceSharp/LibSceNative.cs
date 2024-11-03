@@ -1,5 +1,7 @@
 using System.Runtime.InteropServices;
 
+#pragma warning disable CA1401 // P/ Invoke method 'libsce_destroy' should not be visible
+
 namespace LibSceSharp;
 
 public static unsafe partial class LibSceNative
